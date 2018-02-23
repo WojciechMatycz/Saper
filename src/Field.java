@@ -62,4 +62,11 @@ public class Field {
         else
             return ""+bombsNearby;
     }
+
+    public void changeFlag() {
+        if(isFlagged)
+            isFlagged=false;
+        else
+            isFlagged=true;
+    }
 }
