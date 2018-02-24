@@ -5,12 +5,14 @@ public class Field {
     private boolean isFlagged;
     private boolean hasBomb;
     private int bombsNearby;
+    private boolean revealed;
 
     public Field()
     {
         isEmpty = true;
         isFlagged = false;
         hasBomb = false;
+        revealed = false;
     }
 
     public boolean isEmpty() {
@@ -51,6 +53,14 @@ public class Field {
     {
         this.hasBomb = false;
         this.isEmpty = true;
+    }
+
+    public boolean isRevealed() {
+        return revealed;
+    }
+
+    public void setRevealed(boolean revealed) {
+        this.revealed = revealed;
     }
 
     @Override

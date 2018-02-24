@@ -10,7 +10,10 @@ public class GameFrame extends JFrame {
     public GameFrame() {
         gC = new GameComponent();
         add(gC);
-        setSize(gC.grid.getxSize()*40+40,gC.grid.getySize()*40+40);
+        if(gC.grid.getySize()>gC.grid.getxSize())
+            setSize((gC.grid.getxSize()*10)*4,gC.grid.getySize()*10);
+        else
+            setSize((gC.grid.getxSize()*10),gC.grid.getySize()*10);
         setResizable(false);
     }
 

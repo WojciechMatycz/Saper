@@ -12,7 +12,7 @@ public class GameComponent extends JComponent {
     ButtonList buttons;
 
     public GameComponent(){
-        grid = new Grid(8,8,10);
+        grid = new Grid(16,32,99);
         buttons = new ButtonList();
         //setLayout(new BorderLayout());
 
@@ -23,7 +23,7 @@ public class GameComponent extends JComponent {
             for(int j=0; j<grid.getySize(); j++)
                 addFieldButton(i,j);
 
-        cheat();
+        //cheat();
 
     }
 
@@ -31,7 +31,7 @@ public class GameComponent extends JComponent {
         for (int i = 0; i < grid.getxSize(); i++)
             for (int j = 0; j < grid.getySize(); j++) {
                 if (grid.getMap()[i][j].isBombPlanted()) {
-                    Image img = (new ImageIcon("bomb.png")).getImage();
+                    Image img = (new ImageIcon("images/bomb.png")).getImage();
                     Image newimg = img.getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH);
                     buttons.findButton(i, j).setIcon(new ImageIcon(newimg));
                 }
@@ -61,7 +61,7 @@ public class GameComponent extends JComponent {
                     if(SwingUtilities.isRightMouseButton(e))
                     {
                         if(!grid.getMap()[button.getPositionX()][button.getPositionY()].isFlagged()) {
-                            Image img = (new ImageIcon("flag.png")).getImage();
+                            Image img = (new ImageIcon("images/flag.png")).getImage();
                             Image newimg = img.getScaledInstance( button.getWidth()-5, button.getHeight()-5,  java.awt.Image.SCALE_SMOOTH );
                             button.setIcon(new ImageIcon( newimg ));
                         }
@@ -80,10 +80,10 @@ public class GameComponent extends JComponent {
                             }
                             else if(grid.getMap()[button.getPositionX()][button.getPositionY()].isEmpty())
                             {
-                                emptyClicked(button, button.getPositionX(), button.getPositionY());
+                                emptyClicked(button);
                             }
                             else
-                                reveal(button, button.getPositionX(), button.getPositionY());
+                                reveal(button);
 
                         }
                     }
@@ -110,7 +110,7 @@ public class GameComponent extends JComponent {
             for(int j=0; j<grid.getySize(); j++)
             {
                 if(grid.getMap()[i][j].isBombPlanted()) {
-                    Image img = (new ImageIcon("bomb.png")).getImage();
+                    Image img = (new ImageIcon("images/bomb.png")).getImage();
                     Image newimg = img.getScaledInstance( width, height,  java.awt.Image.SCALE_SMOOTH );
                     buttons.findButton(i, j).setIcon(new ImageIcon( newimg ));
                 }
@@ -121,279 +121,221 @@ public class GameComponent extends JComponent {
             }
     }
 
-    private void emptyClicked(FieldButton button, int positionX, int positionY) {
-        button.setEnabled(false);
-        button.setBackground(Color.white);
+    private void emptyClicked(FieldButton button) {
 
-        Stack stack = new Stack();
+        Stack<FieldButton> stack = new Stack();
+        stack.push(button);
 
-        while()
+        while (!stack.isEmpty()) {
 
-        if(positionX==0 && positionY==0)
-        {
-            if(grid.getMap()[positionX][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX,positionY+1),positionX,positionY+1);
-            else if(!grid.getMap()[positionX][positionY+1].isBombPlanted() && !grid.getMap()[positionX][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX,positionY+1),positionX,positionY+1);
-            if(grid.getMap()[positionX+1][positionY].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY),positionX+1,positionY);
-            else if(!grid.getMap()[positionX+1][positionY].isBombPlanted() && !grid.getMap()[positionX+1][positionY].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY),positionX+1,positionY);
-            if(grid.getMap()[positionX+1][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY+1),positionX+1,positionY+1);
-            else if(!grid.getMap()[positionX+1][positionY+1].isBombPlanted() && !grid.getMap()[positionX+1][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY+1),positionX+1,positionY+1);
-        }
-        else if(positionX ==0 && positionY == grid.getySize()-1)
-        {
-            if(grid.getMap()[positionX][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX,positionY-1),positionX,positionY-1);
-            else if(!grid.getMap()[positionX][positionY-1].isBombPlanted() && !grid.getMap()[positionX][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX,positionY-1),positionX,positionY-1);
-            if(grid.getMap()[positionX+1][positionY].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY),positionX+1,positionY);
-            else if(!grid.getMap()[positionX+1][positionY].isBombPlanted() && !grid.getMap()[positionX+1][positionY].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY),positionX+1,positionY);
-            if(grid.getMap()[positionX+1][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY-1),positionX+1,positionY-1);
-            else if(!grid.getMap()[positionX+1][positionY-1].isBombPlanted() && !grid.getMap()[positionX+1][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY-1),positionX+1,positionY-1);
-        }
-        else if(positionX == grid.getxSize()-1 && positionY==0)
-        {
-            if(grid.getMap()[positionX][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX,positionY+1),positionX,positionY+1);
-            else if(!grid.getMap()[positionX][positionY+1].isBombPlanted() && !grid.getMap()[positionX][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX,positionY+1),positionX,positionY+1);
-            if(grid.getMap()[positionX-1][positionY].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY),positionX-1,positionY);
-            else if(!grid.getMap()[positionX-1][positionY].isBombPlanted() && !grid.getMap()[positionX-1][positionY].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY),positionX-1,positionY);
-            if(grid.getMap()[positionX-1][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY+1),positionX-1,positionY+1);
-            else if(!grid.getMap()[positionX-1][positionY+1].isBombPlanted() && !grid.getMap()[positionX-1][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY+1),positionX-1,positionY+1);
-        }
-        else if(positionX==grid.getxSize()-1 && positionY==grid.getySize()-1)
-        {
-            if(grid.getMap()[positionX][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX,positionY-1),positionX,positionY-1);
-            else if(!grid.getMap()[positionX][positionY-1].isBombPlanted() && !grid.getMap()[positionX][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX,positionY-1),positionX,positionY-1);
-            if(grid.getMap()[positionX-1][positionY].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY),positionX-1,positionY);
-            else if(!grid.getMap()[positionX-1][positionY].isBombPlanted() && !grid.getMap()[positionX-1][positionY].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY),positionX-1,positionY);
-            if(grid.getMap()[positionX-1][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY-1),positionX-1,positionY-1);
-            else if(!grid.getMap()[positionX-1][positionY-1].isBombPlanted() && !grid.getMap()[positionX-1][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY-1),positionX-1,positionY-1);
-        }
-        else if(positionX==0 && positionY>0 && positionY<grid.getySize()-1)
-        {
-            if(grid.getMap()[positionX][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX,positionY+1),positionX,positionY+1);
-            else if(!grid.getMap()[positionX][positionY+1].isBombPlanted() && !grid.getMap()[positionX][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX,positionY+1),positionX,positionY+1);
+            FieldButton b = stack.pop();
+            int positionX = b.getPositionX();
+            int positionY = b.getPositionY();
+            if (grid.getMap()[b.getPositionX()][b.getPositionY()].isEmpty()) {
+                b.setEnabled(false);
+                b.setBackground(Color.white);
+                grid.getMap()[positionX][positionY].setRevealed(true);
+            } else {
+                reveal(b);
+                grid.getMap()[positionX][positionY].setRevealed(true);
+                continue;
+            }
 
-            if(grid.getMap()[positionX+1][positionY].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY),positionX+1,positionY);
-            else if(!grid.getMap()[positionX+1][positionY].isBombPlanted() && !grid.getMap()[positionX+1][positionY].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY),positionX+1,positionY);
+            if (positionX == 0 && positionY == 0) {
+                if (!grid.getMap()[positionX][positionY + 1].isRevealed() && !grid.getMap()[positionX][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX, positionY + 1))) {
+                    if (!grid.getMap()[positionX][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX, positionY + 1));
+                }if (!grid.getMap()[positionX+1][positionY + 1].isRevealed() && !grid.getMap()[positionX + 1][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY + 1))) {
+                    if (!grid.getMap()[positionX + 1][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY + 1));
+                } if (!grid.getMap()[positionX+1][positionY].isRevealed() && !grid.getMap()[positionX + 1][positionY].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY))) {
+                    if (!grid.getMap()[positionX + 1][positionY].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY));
+                }
+            } else if (positionX == 0 && positionY == grid.getySize() - 1) {
+                if (!grid.getMap()[positionX][positionY - 1].isRevealed() && !grid.getMap()[positionX][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX, positionY - 1))) {
+                    if (!grid.getMap()[positionX][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX, positionY - 1));
+                } if (!grid.getMap()[positionX+1][positionY - 1].isRevealed() && !grid.getMap()[positionX + 1][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY - 1))) {
+                    if (!grid.getMap()[positionX + 1][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY - 1));
+                } if (!grid.getMap()[positionX+1][positionY].isRevealed() && !grid.getMap()[positionX + 1][positionY].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY))) {
+                    if (!grid.getMap()[positionX + 1][positionY].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY));
+                }
+            } else if (positionX == grid.getxSize() - 1 && positionY == 0) {
+                if (!grid.getMap()[positionX][positionY + 1].isRevealed() && !grid.getMap()[positionX][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX, positionY + 1))) {
+                    if (!grid.getMap()[positionX][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX, positionY + 1));
+                } if (!grid.getMap()[positionX-1][positionY+1].isRevealed() && !grid.getMap()[positionX - 1][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY + 1))) {
+                    if (!grid.getMap()[positionX - 1][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY + 1));
+                } if (!grid.getMap()[positionX-1][positionY ].isRevealed() && !grid.getMap()[positionX - 1][positionY].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY))) {
+                    if (!grid.getMap()[positionX - 1][positionY].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY));
+                }
+            } else if (positionX == grid.getxSize() - 1 && positionY == grid.getySize() - 1) {
+                if (!grid.getMap()[positionX][positionY - 1].isRevealed() && !grid.getMap()[positionX][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX, positionY - 1))) {
+                    if (!grid.getMap()[positionX][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX, positionY - 1));
+                } if (!grid.getMap()[positionX-1][positionY - 1].isRevealed() && !grid.getMap()[positionX - 1][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY - 1))) {
+                    if (!grid.getMap()[positionX - 1][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY - 1));
+                } if (!grid.getMap()[positionX-1][positionY].isRevealed() && !grid.getMap()[positionX - 1][positionY].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY))) {
+                    if (!grid.getMap()[positionX - 1][positionY].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY));
+                }
+            } else if (positionX == 0 && positionY > 0 && positionY < grid.getySize() - 1) {
+                if (!grid.getMap()[positionX][positionY + 1].isRevealed() && !grid.getMap()[positionX][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX, positionY + 1))) {
+                    if (!grid.getMap()[positionX][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX, positionY + 1));
+                } if (!grid.getMap()[positionX+1][positionY + 1].isRevealed() && !grid.getMap()[positionX + 1][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY + 1))) {
+                    if (!grid.getMap()[positionX + 1][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY + 1));
+                } if (!grid.getMap()[positionX+1][positionY].isRevealed() && !grid.getMap()[positionX + 1][positionY].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY))) {
+                    if (!grid.getMap()[positionX + 1][positionY].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY));
+                } if (!grid.getMap()[positionX][positionY - 1].isRevealed() && !grid.getMap()[positionX][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX, positionY - 1))) {
+                    if (!grid.getMap()[positionX][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX, positionY - 1));
+                } if (!grid.getMap()[positionX+1][positionY - 1].isRevealed() && !grid.getMap()[positionX + 1][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY - 1))) {
+                    if (!grid.getMap()[positionX + 1][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY - 1));
+                }
 
-            if(grid.getMap()[positionX+1][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY+1),positionX+1,positionY+1);
-            else if(!grid.getMap()[positionX+1][positionY+1].isBombPlanted() && !grid.getMap()[positionX+1][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY+1),positionX+1,positionY+1);
-
-            if(grid.getMap()[positionX][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX,positionY-1),positionX,positionY-1);
-            else if(!grid.getMap()[positionX][positionY-1].isBombPlanted() && !grid.getMap()[positionX][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX,positionY-1),positionX,positionY-1);
-
-            if(grid.getMap()[positionX+1][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY-1),positionX+1,positionY-1);
-            else if(!grid.getMap()[positionX+1][positionY-1].isBombPlanted() && !grid.getMap()[positionX+1][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY-1),positionX+1,positionY-1);
-
-        }
-        else if(positionX==grid.getxSize()-1 && positionY>0 && positionY<grid.getySize()-1)
-        {
-            if(grid.getMap()[positionX-1][positionY].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY),positionX-1,positionY);
-            else if(!grid.getMap()[positionX-1][positionY].isBombPlanted() && !grid.getMap()[positionX-1][positionY].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY),positionX-1,positionY);
-
-            if(grid.getMap()[positionX-1][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY-1),positionX-1,positionY-1);
-            else if(!grid.getMap()[positionX-1][positionY-1].isBombPlanted() && !grid.getMap()[positionX-1][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY-1),positionX-1,positionY-1);
-
-            if(grid.getMap()[positionX][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX,positionY-1),positionX,positionY-1);
-            else if(!grid.getMap()[positionX][positionY-1].isBombPlanted() && !grid.getMap()[positionX][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX,positionY-1),positionX,positionY-1);
-
-            if(grid.getMap()[positionX-1][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY+1),positionX-1,positionY+1);
-            else if(!grid.getMap()[positionX-1][positionY+1].isBombPlanted() && !grid.getMap()[positionX-1][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY+1),positionX-1,positionY+1);
-
-            if(grid.getMap()[positionX][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX,positionY+1),positionX,positionY+1);
-            else if(!grid.getMap()[positionX][positionY+1].isBombPlanted() && !grid.getMap()[positionX][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX,positionY+1),positionX,positionY+1);
-        }
-        else if(positionY ==0 && positionX>0 && positionX<grid.getxSize()-1)
-        {
-            if(grid.getMap()[positionX][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX,positionY+1),positionX,positionY+1);
-            else if(!grid.getMap()[positionX][positionY+1].isBombPlanted() && !grid.getMap()[positionX][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX,positionY+1),positionX,positionY+1);
-
-            if(grid.getMap()[positionX+1][positionY].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY),positionX+1,positionY);
-            else if(!grid.getMap()[positionX+1][positionY].isBombPlanted() && !grid.getMap()[positionX+1][positionY].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY),positionX+1,positionY);
-
-            if(grid.getMap()[positionX+1][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY+1),positionX+1,positionY+1);
-            else if(!grid.getMap()[positionX+1][positionY+1].isBombPlanted() && !grid.getMap()[positionX+1][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY+1),positionX+1,positionY+1);
-
-            if(grid.getMap()[positionX-1][positionY].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY),positionX-1,positionY);
-            else if(!grid.getMap()[positionX-1][positionY].isBombPlanted() && !grid.getMap()[positionX-1][positionY].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY),positionX-1,positionY);
-
-            if(grid.getMap()[positionX-1][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY+1),positionX-1,positionY+1);
-            else if(!grid.getMap()[positionX-1][positionY+1].isBombPlanted() && !grid.getMap()[positionX-1][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY+1),positionX-1,positionY+1);
-        }
-        else if(positionY==grid.getySize()-1 && positionX>0 && positionX<grid.getxSize()-1)
-        {
-            if(grid.getMap()[positionX][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX,positionY-1),positionX,positionY-1);
-            else if(!grid.getMap()[positionX][positionY-1].isBombPlanted() && !grid.getMap()[positionX][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX,positionY-1),positionX,positionY-1);
-
-            if(grid.getMap()[positionX+1][positionY].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY),positionX+1,positionY);
-            else if(!grid.getMap()[positionX+1][positionY].isBombPlanted() && !grid.getMap()[positionX+1][positionY].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY),positionX+1,positionY);
-
-            if(grid.getMap()[positionX+1][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY-1),positionX+1,positionY-1);
-            else if(!grid.getMap()[positionX+1][positionY-1].isBombPlanted() && !grid.getMap()[positionX+1][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY-1),positionX+1,positionY-1);
-
-            if(grid.getMap()[positionX-1][positionY].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY),positionX-1,positionY);
-            else if(!grid.getMap()[positionX-1][positionY].isBombPlanted() && !grid.getMap()[positionX-1][positionY].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY),positionX-1,positionY);
-
-            if(grid.getMap()[positionX-1][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY-1),positionX-1,positionY-1);
-            else if(!grid.getMap()[positionX-1][positionY-1].isBombPlanted() && !grid.getMap()[positionX-1][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY-1),positionX-1,positionY-1);
-        }
-        else
-        {
-            if(grid.getMap()[positionX][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX,positionY-1),positionX,positionY-1);
-            else if(!grid.getMap()[positionX][positionY-1].isBombPlanted() && !grid.getMap()[positionX][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX,positionY-1),positionX,positionY-1);
-
-            if(grid.getMap()[positionX+1][positionY].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY),positionX+1,positionY);
-            else if(!grid.getMap()[positionX+1][positionY].isBombPlanted() && !grid.getMap()[positionX+1][positionY].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY),positionX+1,positionY);
-
-            if(grid.getMap()[positionX+1][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY-1),positionX+1,positionY-1);
-            else if(!grid.getMap()[positionX+1][positionY-1].isBombPlanted() && !grid.getMap()[positionX+1][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY-1),positionX+1,positionY-1);
-
-            if(grid.getMap()[positionX-1][positionY].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY),positionX-1,positionY);
-            else if(!grid.getMap()[positionX-1][positionY].isBombPlanted() && !grid.getMap()[positionX-1][positionY].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY),positionX-1,positionY);
-
-            if(grid.getMap()[positionX-1][positionY-1].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY-1),positionX-1,positionY-1);
-            else if(!grid.getMap()[positionX-1][positionY-1].isBombPlanted() && !grid.getMap()[positionX-1][positionY-1].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY-1),positionX-1,positionY-1);
-
-            if(grid.getMap()[positionX][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX,positionY+1),positionX,positionY+1);
-            else if(!grid.getMap()[positionX][positionY+1].isBombPlanted() && !grid.getMap()[positionX][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX,positionY+1),positionX,positionY+1);
-
-            if(grid.getMap()[positionX-1][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX-1,positionY+1),positionX-1,positionY+1);
-            else if(!grid.getMap()[positionX-1][positionY+1].isBombPlanted() && !grid.getMap()[positionX-1][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX-1,positionY+1),positionX-1,positionY+1);
-
-            if(grid.getMap()[positionX+1][positionY+1].isEmpty())
-                emptyClicked(buttons.findButton(positionX+1,positionY+1),positionX+1,positionY+1);
-            else if(!grid.getMap()[positionX+1][positionY+1].isBombPlanted() && !grid.getMap()[positionX+1][positionY+1].isFlagged())
-                reveal(buttons.findButton(positionX+1,positionY+1),positionX+1,positionY+1);
+            } else if (positionX == grid.getxSize() - 1 && positionY > 0 && positionY < grid.getySize() - 1) {
+                if (!grid.getMap()[positionX][positionY + 1].isRevealed() && !grid.getMap()[positionX][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX, positionY + 1))) {
+                    if (!grid.getMap()[positionX][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX, positionY + 1));
+                } if (!grid.getMap()[positionX-1][positionY + 1].isRevealed() && !grid.getMap()[positionX - 1][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY + 1))) {
+                    if (!grid.getMap()[positionX - 1][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY + 1));
+                } if (!grid.getMap()[positionX-1][positionY].isRevealed() && !grid.getMap()[positionX - 1][positionY].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY))) {
+                    if (!grid.getMap()[positionX - 1][positionY].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY));
+                } if (!grid.getMap()[positionX][positionY - 1].isRevealed() && !grid.getMap()[positionX][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX, positionY - 1))) {
+                    if (!grid.getMap()[positionX][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX, positionY - 1));
+                } if (!grid.getMap()[positionX-1][positionY - 1].isRevealed() && !grid.getMap()[positionX - 1][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY - 1))) {
+                    if (!grid.getMap()[positionX - 1][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY - 1));
+                }
+            } else if (positionY == 0 && positionX > 0 && positionX < grid.getxSize() - 1) {
+                if (!grid.getMap()[positionX][positionY + 1].isRevealed() && !grid.getMap()[positionX][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX, positionY + 1))) {
+                    if (!grid.getMap()[positionX][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX, positionY + 1));
+                } if (!grid.getMap()[positionX+1][positionY + 1].isRevealed() && !grid.getMap()[positionX + 1][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY + 1))) {
+                    if (!grid.getMap()[positionX + 1][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY + 1));
+                } if (!grid.getMap()[positionX+1][positionY].isRevealed() && !grid.getMap()[positionX + 1][positionY].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY))) {
+                    if (!grid.getMap()[positionX + 1][positionY].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY));
+                } if (!grid.getMap()[positionX-1][positionY].isRevealed() && !grid.getMap()[positionX - 1][positionY].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY))) {
+                    if (!grid.getMap()[positionX - 1][positionY].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY));
+                } if (!grid.getMap()[positionX-1][positionY + 1].isRevealed() && !grid.getMap()[positionX - 1][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY + 1))) {
+                    if (!grid.getMap()[positionX - 1][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY + 1));
+                }
+            } else if (positionY == grid.getySize() - 1 && positionX > 0 && positionX < grid.getxSize() - 1) {
+                if (!grid.getMap()[positionX][positionY - 1].isRevealed() && !grid.getMap()[positionX][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX, positionY - 1))) {
+                    if (!grid.getMap()[positionX][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX, positionY - 1));
+                } if (!grid.getMap()[positionX+1][positionY - 1].isRevealed() && !grid.getMap()[positionX + 1][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY - 1))) {
+                    if (!grid.getMap()[positionX + 1][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY - 1));
+                } if (!grid.getMap()[positionX+1][positionY].isRevealed() && !grid.getMap()[positionX + 1][positionY].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY))) {
+                    if (!grid.getMap()[positionX + 1][positionY].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY));
+                } if (!grid.getMap()[positionX-1][positionY - 1].isRevealed() && !grid.getMap()[positionX - 1][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY - 1))) {
+                    if (!grid.getMap()[positionX - 1][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY - 1));
+                } if (!grid.getMap()[positionX-1][positionY].isRevealed() && !grid.getMap()[positionX - 1][positionY].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY))) {
+                    if (!grid.getMap()[positionX - 1][positionY].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY));
+                }
+            } else {
+                if (!grid.getMap()[positionX][positionY + 1].isRevealed() && !grid.getMap()[positionX][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX, positionY + 1))) {
+                    if (!grid.getMap()[positionX][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX, positionY + 1));
+                } if (!grid.getMap()[positionX+1][positionY + 1].isRevealed() && !grid.getMap()[positionX + 1][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY + 1))) {
+                    if (!grid.getMap()[positionX + 1][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY + 1));
+                } if (!grid.getMap()[positionX+1][positionY].isRevealed() && !grid.getMap()[positionX + 1][positionY].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY))) {
+                    if (!grid.getMap()[positionX + 1][positionY].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY));
+                } if (!grid.getMap()[positionX][positionY - 1].isRevealed() && !grid.getMap()[positionX][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX, positionY - 1))) {
+                    if (!grid.getMap()[positionX][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX, positionY - 1));
+                } if (!grid.getMap()[positionX+1][positionY - 1].isRevealed() && !grid.getMap()[positionX + 1][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX + 1, positionY - 1))) {
+                    if (!grid.getMap()[positionX + 1][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX + 1, positionY - 1));
+                } if (!grid.getMap()[positionX-1][positionY + 1].isRevealed() && !grid.getMap()[positionX - 1][positionY + 1].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY + 1))) {
+                    if (!grid.getMap()[positionX - 1][positionY + 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY + 1));
+                } if (!grid.getMap()[positionX-1][positionY - 1].isRevealed() && !grid.getMap()[positionX - 1][positionY - 1].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY - 1))) {
+                    if (!grid.getMap()[positionX - 1][positionY - 1].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY - 1));
+                } if (!grid.getMap()[positionX-1][positionY].isRevealed() && !grid.getMap()[positionX - 1][positionY].isFlagged() && !stack.contains(buttons.findButton(positionX - 1, positionY))) {
+                    if (!grid.getMap()[positionX - 1][positionY].isBombPlanted())
+                        stack.push(buttons.findButton(positionX - 1, positionY));
+                }
+            }
         }
     }
 
-    private void reveal(FieldButton button, int positionX, int positionY) {
+    private void reveal(FieldButton button) {
         Image img;
         Image newimg;
         switch(grid.getMap()[button.getPositionX()][button.getPositionY()].getBombsNearby())
         {
             case 1:
-                img = (new ImageIcon("one.png")).getImage();
+                img = (new ImageIcon("images/one.png")).getImage();
                 newimg = img.getScaledInstance( button.getWidth()-5, button.getHeight()-5,  java.awt.Image.SCALE_SMOOTH );
                 button.setIcon(new ImageIcon( newimg ));
-                button.setEnabled(false);
+                button.setBackground(Color.white);
                 break;
             case 2:
-                img = (new ImageIcon("one.png")).getImage();
+                img = (new ImageIcon("images/two.png")).getImage();
                 newimg = img.getScaledInstance( button.getWidth()-5, button.getHeight()-5,  java.awt.Image.SCALE_SMOOTH );
                 button.setIcon(new ImageIcon( newimg ));
-                button.setEnabled(false);
+                button.setBackground(Color.white);
                 break;
             case 3:
-                img = (new ImageIcon("one.png")).getImage();
+                img = (new ImageIcon("images/three.png")).getImage();
                 newimg = img.getScaledInstance( button.getWidth()-5, button.getHeight()-5,  java.awt.Image.SCALE_SMOOTH );
                 button.setIcon(new ImageIcon( newimg ));
-                button.setEnabled(false);
+                button.setBackground(Color.white);
                 break;
             case 4:
-                img = (new ImageIcon("one.png")).getImage();
+                img = (new ImageIcon("images/four.png")).getImage();
                 newimg = img.getScaledInstance( button.getWidth()-5, button.getHeight()-5,  java.awt.Image.SCALE_SMOOTH );
                 button.setIcon(new ImageIcon( newimg ));
-                button.setEnabled(false);
+                button.setBackground(Color.white);
                 break;
             case 5:
-                img = (new ImageIcon("one.png")).getImage();
+                img = (new ImageIcon("images/five.png")).getImage();
                 newimg = img.getScaledInstance( button.getWidth()-5, button.getHeight()-5,  java.awt.Image.SCALE_SMOOTH );
                 button.setIcon(new ImageIcon( newimg ));
-                button.setEnabled(false);
+                button.setBackground(Color.white);
                 break;
             case 6:
-                img = (new ImageIcon("one.png")).getImage();
+                img = (new ImageIcon("images/six.png")).getImage();
                 newimg = img.getScaledInstance( button.getWidth()-5, button.getHeight()-5,  java.awt.Image.SCALE_SMOOTH );
                 button.setIcon(new ImageIcon( newimg ));
-                button.setEnabled(false);
+                button.setBackground(Color.white);
                 break;
             case 7:
-                img = (new ImageIcon("one.png")).getImage();
+                img = (new ImageIcon("images/seven.png")).getImage();
                 newimg = img.getScaledInstance( button.getWidth()-5, button.getHeight()-5,  java.awt.Image.SCALE_SMOOTH );
                 button.setIcon(new ImageIcon( newimg ));
-                button.setEnabled(false);
+                button.setBackground(Color.white);
                 break;
             case 8:
-                img = (new ImageIcon("one.png")).getImage();
+                img = (new ImageIcon("images/eight.png")).getImage();
                 newimg = img.getScaledInstance( button.getWidth()-5, button.getHeight()-5,  java.awt.Image.SCALE_SMOOTH );
                 button.setIcon(new ImageIcon( newimg ));
-                button.setEnabled(false);
+                button.setBackground(Color.white);
                 break;
 
         }
