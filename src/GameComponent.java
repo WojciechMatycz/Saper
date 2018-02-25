@@ -10,13 +10,15 @@ import java.util.Stack;
 public class GameComponent extends JComponent {
     Grid grid;
     ButtonList buttons;
+    JPanel panel;
 
     public GameComponent(){
         grid = new Grid(16,32,99);
         buttons = new ButtonList();
+        panel = new JPanel();
         //setLayout(new BorderLayout());
 
-        setLayout(new GridLayout(grid.getxSize(), grid.getySize()));
+        panel.setLayout(new GridLayout(grid.getxSize(), grid.getySize()));
 
 
         for (int i = 0; i < grid.getxSize(); i++)
@@ -25,6 +27,17 @@ public class GameComponent extends JComponent {
 
         //cheat();
 
+    }
+
+    public void reset()
+    {
+        panel.removeAll();
+        buttons.removeAll();
+        panel.setLayout(new GridLayout(grid.getxSize(), grid.getySize()));
+        for (int i = 0; i < grid.getxSize(); i++)
+            for(int j=0; j<grid.getySize(); j++)
+                addFieldButton(i,j);
+        panel.repaint();
     }
 
     private void cheat() {
@@ -73,7 +86,7 @@ public class GameComponent extends JComponent {
                     }
                     else if(SwingUtilities.isLeftMouseButton(e))
                     {
-                        if(!grid.getMap()[button.getPositionX()][button.getPositionY()].isFlagged())
+                        if(!grid.getMap()[button.getPositionX()][button.getPositionY()].isFlagged() && button.isEnabled())
                         {
                             if(grid.getMap()[button.getPositionX()][button.getPositionY()].isBombPlanted()) {
                                 revealAllBombs(button.getWidth()-5, button.getHeight()-5);
@@ -101,7 +114,7 @@ public class GameComponent extends JComponent {
             }
         });
         button.setBackground(new Color(216,216,216));
-        add(button);
+        panel.add(button);
         buttons.add(button);
     }
 

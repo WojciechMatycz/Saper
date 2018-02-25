@@ -30,4 +30,8 @@ public class ButtonList {
 
         return null;
     }
+
+    public void removeAll() {
+        buttons.removeAll(buttons);
+    }
 }

@@ -9,7 +9,11 @@ public class GameFrame extends JFrame {
 
     public GameFrame() {
         gC = new GameComponent();
-        add(gC);
+        JButton button = new JButton("RESET");
+        /*button.addActionListener(e -> gC.reset());
+        setLayout(new BorderLayout());
+        add(button, BorderLayout.NORTH);*/
+        add(gC.panel,BorderLayout.CENTER);
         if(gC.grid.getySize()>gC.grid.getxSize())
             setSize((gC.grid.getxSize()*10)*4,gC.grid.getySize()*10);
         else
