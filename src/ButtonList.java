@@ -34,4 +34,8 @@ public class ButtonList {
     public void removeAll() {
         buttons.removeAll(buttons);
     }
+
+    public int size() {
+        return buttons.size();
+    }
 }

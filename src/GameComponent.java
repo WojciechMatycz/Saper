@@ -1,9 +1,13 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -11,9 +15,10 @@ public class GameComponent extends JComponent {
     Grid grid;
     ButtonList buttons;
     JPanel panel;
+    int fieldsAmount;
 
     public GameComponent(){
-        grid = new Grid(16,32,99);
+        grid = new Grid(8,8,10);
         buttons = new ButtonList();
         panel = new JPanel();
         //setLayout(new BorderLayout());
@@ -25,19 +30,20 @@ public class GameComponent extends JComponent {
             for(int j=0; j<grid.getySize(); j++)
                 addFieldButton(i,j);
 
-        //cheat();
+        fieldsAmount = 0;
 
     }
 
     public void reset()
     {
         panel.removeAll();
-        buttons.removeAll();
         panel.setLayout(new GridLayout(grid.getxSize(), grid.getySize()));
+        buttons.removeAll();
+        grid = new Grid(8,8,10);
         for (int i = 0; i < grid.getxSize(); i++)
             for(int j=0; j<grid.getySize(); j++)
                 addFieldButton(i,j);
-        panel.repaint();
+        fieldsAmount = 0;
     }
 
     private void cheat() {
@@ -95,12 +101,45 @@ public class GameComponent extends JComponent {
                             {
                                 emptyClicked(button);
                             }
-                            else
+                            else {
                                 reveal(button);
+                                grid.getMap()[button.getPositionX()][button.getPositionY()].setRevealed(true);
+                            }
 
                         }
                     }
                 }
+                fieldsAmount = updateFieldsAmount();
+                if(fieldsAmount==10) {
+                    panel.removeAll();
+                    panel.setLayout(new BorderLayout());
+
+                    Image myPicture = null;
+                    try {
+                        myPicture = ImageIO.read(new File("images/youWin.png")).getScaledInstance(panel.getWidth(),panel.getHeight(), Image.SCALE_SMOOTH);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+                           // (panel.getWidth(), panel.getHeight(), java.awt.Image.SCALE_SMOOTH);
+                    panel.add(picLabel);
+                    panel.validate();
+                    panel.repaint();
+                }
+            }
+
+            private String clicked() {
+
+            String result = "";
+                for(int i=0; i<grid.getxSize(); i++) {
+                    for (int j = 0; j < grid.getySize(); j++)
+                        if (grid.getMap()[i][j].isRevealed())
+                            result += "+";
+                        else
+                            result += "0";
+                    result += "\n";
+                }
+                return result;
             }
 
             @Override
@@ -116,6 +155,17 @@ public class GameComponent extends JComponent {
         button.setBackground(new Color(216,216,216));
         panel.add(button);
         buttons.add(button);
+    }
+
+    public int updateFieldsAmount()
+    {
+        int sum = 0;
+        for(int i=0; i<grid.getxSize(); i++)
+            for(int j=0; j<grid.getySize(); j++)
+                if(!grid.getMap()[i][j].isRevealed())
+                    sum++;
+
+        return sum;
     }
 
     private void revealAllBombs(int width, int height) {
