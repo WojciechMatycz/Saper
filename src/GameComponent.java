@@ -16,32 +16,41 @@ public class GameComponent extends JComponent {
     ButtonList buttons;
     JPanel panel;
     int fieldsAmount;
+    private int currentBombsAmount;
+    private int x;
+    private int y;
 
-    public GameComponent(){
-        grid = new Grid(8,8,10);
+    public GameComponent(int x, int y, int bombsAmount){
+        this.x = x;
+        this.y = y;
+        currentBombsAmount = bombsAmount;
+        grid = new Grid(x,y,bombsAmount);
         buttons = new ButtonList();
         panel = new JPanel();
         //setLayout(new BorderLayout());
 
-        panel.setLayout(new GridLayout(grid.getxSize(), grid.getySize()));
+        panel.setLayout(new GridLayout(x, y));
 
 
-        for (int i = 0; i < grid.getxSize(); i++)
-            for(int j=0; j<grid.getySize(); j++)
+        for (int i = 0; i < x; i++)
+            for(int j=0; j<y; j++)
                 addFieldButton(i,j);
 
         fieldsAmount = 0;
 
     }
 
-    public void reset()
+    public void reset(int x,int y, int bombs)
     {
+        this.x = x;
+        this.y = y;
+        currentBombsAmount = bombs;
         panel.removeAll();
-        panel.setLayout(new GridLayout(grid.getxSize(), grid.getySize()));
+        panel.setLayout(new GridLayout(x, y));
         buttons.removeAll();
-        grid = new Grid(8,8,10);
-        for (int i = 0; i < grid.getxSize(); i++)
-            for(int j=0; j<grid.getySize(); j++)
+        grid = new Grid(x,y,bombs);
+        for (int i = 0; i < x; i++)
+            for(int j=0; j<y; j++)
                 addFieldButton(i,j);
         fieldsAmount = 0;
     }
@@ -60,7 +69,6 @@ public class GameComponent extends JComponent {
     public void addFieldButton(int x, int y)
     {
         FieldButton button = new FieldButton(x,y);
-        button.setSize(10,10);
         button.addMouseListener(new MouseAdapter() {
             boolean pressed;
 
@@ -110,7 +118,7 @@ public class GameComponent extends JComponent {
                     }
                 }
                 fieldsAmount = updateFieldsAmount();
-                if(fieldsAmount==10) {
+                if(fieldsAmount==currentBombsAmount) {
                     panel.removeAll();
                     panel.setLayout(new BorderLayout());
 
@@ -121,7 +129,6 @@ public class GameComponent extends JComponent {
                         e1.printStackTrace();
                     }
                     JLabel picLabel = new JLabel(new ImageIcon(myPicture));
-                           // (panel.getWidth(), panel.getHeight(), java.awt.Image.SCALE_SMOOTH);
                     panel.add(picLabel);
                     panel.validate();
                     panel.repaint();
@@ -404,5 +411,17 @@ public class GameComponent extends JComponent {
         }
     }
 
+    public int getCurrentBombsAmount() {
+        return currentBombsAmount;
+    }
 
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
+    }
 }
